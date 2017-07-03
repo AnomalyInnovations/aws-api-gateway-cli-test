@@ -1,6 +1,6 @@
 # AWS API Gateway Test CLI
 
-A simple CLI to test API Gateway endpoints with IAM authorization. Uses the AWS SDK, AWS Cognito JS SDK, and the generic [API Gateway Client][apiGClient].
+A simple CLI to test API Gateway endpoints with IAM authorization. Uses the AWS SDK, AWS Cognito JS SDK, and the generic [API Gateway Client][apiGClient]. Using the login information given, this tool logs a user into the Cognito User Pool, gets the temporary IAM credentials, and makes the API request. It can be very difficult to these steps by hand without scripting them.
 
 ### Installation
 
