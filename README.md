@@ -13,7 +13,7 @@ $ npm install -g aws-api-gateway-cli-test
 ### Usage
 
 ```
-aws-api-gateway-test \
+apig-test \
   --username='johndoe' \
   --password='password' \
   --user-pool-id='us-east-1_Xxxxxxxx' \
@@ -84,7 +84,7 @@ $ npm install
 
 Test the command using `node index.js`.
 
-To install the `aws-api-gateway-test` command, run the following:
+To install the `apig-test` command, run the following:
 
 ```
 $ npm link

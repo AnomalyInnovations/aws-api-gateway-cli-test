@@ -11,7 +11,7 @@
     "url": "https://github.com/AnomalyInnovations/aws-api-gateway-cli-test.git"
   },
   "bin": {
-    "aws-api-gateway-test": "index.js"
+    "apig-test": "index.js"
   },
   "author": "Jav V <air@live.ca>",
   "license": "MIT",
