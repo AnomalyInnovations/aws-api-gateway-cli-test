@@ -60,7 +60,7 @@ var argv = require('yargs')
   .argv;
 
 
-function login() {
+function authenticate(callback) {
   var poolData = {
     UserPoolId : argv.userPoolId,
     ClientId : argv.appClientId
@@ -81,12 +81,11 @@ function login() {
 
   var cognitoUser = new AWSCognito.CognitoUser(userData);
 
-  console.log('Logging in with User Pool');
+  console.log('Authenticating with User Pool');
 
   cognitoUser.authenticateUser(authenticationDetails, {
     onSuccess: function (result) {
-      console.log('Getting temporary credentials');
-      getCredentials(result.getIdToken().getJwtToken());
+      callback(result.getIdToken().getJwtToken());
     },
     onFailure: function(err) {
       console.log(err.message ? err.message : err);
@@ -94,7 +93,9 @@ function login() {
   });
 }
 
-function getCredentials(userToken) {
+function getCredentials(userToken, callback) {
+  console.log('Getting temporary credentials');
+
   var logins = {};
 
   logins['cognito-idp.us-east-1.amazonaws.com/' + argv.userPoolId] = userToken;
@@ -110,37 +111,44 @@ function getCredentials(userToken) {
       return;
     }
 
-    var apigClient = apigClientFactory.newClient({
-      accessKey: AWS.config.credentials.accessKeyId,
-      secretKey: AWS.config.credentials.secretAccessKey,
-      sessionToken: AWS.config.credentials.sessionToken,
-      region: argv.apiGatewayRegion,
-      invokeUrl: argv.invokeUrl
-    });
-
-    console.log('Making API request');
-
-    var params = JSON.parse(argv.params);
-    var additionalParams = JSON.parse(argv.additionalParams);
-    var body = JSON.parse(argv.body);
-
-    apigClient.invokeApi(params, argv.pathTemplate, argv.method, additionalParams, body)
-      .then(function(result) {
-        console.dir({
-          status: result.status,
-          statusText: result.statusText,
-          data: result.data
-        });
-      })
-      .catch(function(result) {
-        console.dir({
-          status: result.response.status,
-          statusText: result.response.statusText,
-          data: result.response.data
-        });
-      });
-    
+    callback();
   });
 }
 
-login();
+function makeRequest() {
+  console.log('Making API request');
+
+  var apigClient = apigClientFactory.newClient({
+    accessKey: AWS.config.credentials.accessKeyId,
+    secretKey: AWS.config.credentials.secretAccessKey,
+    sessionToken: AWS.config.credentials.sessionToken,
+    region: argv.apiGatewayRegion,
+    invokeUrl: argv.invokeUrl
+  });
+
+  var params = JSON.parse(argv.params);
+  var additionalParams = JSON.parse(argv.additionalParams);
+  var body = JSON.parse(argv.body);
+
+  apigClient.invokeApi(params, argv.pathTemplate, argv.method, additionalParams, body)
+    .then(function(result) {
+      console.dir({
+        status: result.status,
+        statusText: result.statusText,
+        data: result.data
+      });
+    })
+    .catch(function(result) {
+      console.dir({
+        status: result.response.status,
+        statusText: result.response.statusText,
+        data: result.response.data
+      });
+    });
+}
+
+authenticate(
+  function(token) {
+    getCredentials(token, makeRequest);
+  }
+);
