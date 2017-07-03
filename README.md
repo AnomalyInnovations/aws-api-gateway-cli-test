@@ -1,4 +1,4 @@
-# aws-api-gateway-cli-test
+# AWS API Gateway Test CLI
 
 A simple CLI to test API Gateway endpoints with IAM authorization. Uses the AWS SDK, AWS Cognito JS SDK, and the generic [API Gateway Client][apiGClient].
 
@@ -59,7 +59,7 @@ This command takes the following options:
   The path template of the API.
 
 - `method`
-  The API method. Defatuls to `GET`.
+  The API method. Defaults to `GET`.
 
 - `params`
   The API params (path, header, querystring, etc) as a JSON string. Defaults to `'{}'`.
@@ -70,7 +70,7 @@ This command takes the following options:
 - `body`
   The request body as a JSON string. Defaults to `'{}'`.
 
-For additional documentation on the format for `params` and `additional-params`; refere to the generic [API Gateway Client][apiGClient] docs.
+For additional documentation on the format for `params` and `additional-params`; refer to the generic [API Gateway Client][apiGClient] docs.
 
 ### Local Development
 
