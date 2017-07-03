@@ -84,7 +84,7 @@ $ npm install
 
 Test the command using `node index.js`.
 
-To install the command, run the following:
+To install the `aws-api-gateway-cli-test` command, run the following:
 
 ```
 $ npm link
