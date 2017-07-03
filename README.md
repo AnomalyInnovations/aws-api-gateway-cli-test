@@ -32,16 +32,16 @@ aws-api-gateway-cli-test \
 This command takes the following options:
 
 - `username`
-  The username of the Cognito User Pool user
+  The username of the Cognito User Pool user.
 
 - `password`
-  The password of the Cognito User Pool user
+  The password of the Cognito User Pool user.
 
 - `user-pool-id`
-  The Cognito User Pool Id
+  The Cognito User Pool Id.
 
 - `app-client-id`
-  The Cognito User Pool App Client Id
+  The Cognito User Pool App Client Id.
 
 - `cognito-region`
   The Cognito User Pool region. Defaults to `us-east-1`.
@@ -50,7 +50,7 @@ This command takes the following options:
   The Cognito Identity Pool Id.
 
 - `invoke-url`
-  The API Gateway root endpoint
+  The API Gateway root endpoint.
 
 - `api-gateway-region`
   The API Gateway region. Defaults to `us-east-1`.
