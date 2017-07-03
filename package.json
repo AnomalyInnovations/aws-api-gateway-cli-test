@@ -10,6 +10,9 @@
     "type": "git",
     "url": "https://github.com/AnomalyInnovations/aws-api-gateway-cli-test.git"
   },
+  "bin": {
+    "aws-api-gateway-cli-test": "index.js"
+  },
   "author": "Jav V <air@live.ca>",
   "license": "MIT",
   "dependencies": {
