@@ -13,7 +13,7 @@ $ npm install -g aws-api-gateway-cli-test
 ### Usage
 
 ```
-aws-api-gateway-cli-test index.js \
+aws-api-gateway-cli-test \
   --username='johndoe' \
   --password='password' \
   --user-pool-id='us-east-1_Xxxxxxxx' \
