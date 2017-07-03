@@ -1,4 +1,4 @@
-# AWS API Gateway Test CLI <a href="https://www.npmjs.com/package/toolbeam-cli"><img alt="NPM Version" src="https://img.shields.io/npm/v/aws-api-gateway-cli-test.svg?style=flat-square" /></a>
+# AWS API Gateway Test CLI <a href="https://www.npmjs.com/package/aws-api-gateway-cli-test"><img alt="NPM Version" src="https://img.shields.io/npm/v/aws-api-gateway-cli-test.svg?style=flat-square" /></a>
 
 A simple CLI to test API Gateway endpoints with IAM authorization. Uses the AWS SDK, AWS Cognito JS SDK, and the generic [API Gateway Client][apiGClient]. Using the login information given, this tool logs a user into the Cognito User Pool, gets the temporary IAM credentials, and makes the API request. It can be very difficult to these steps by hand without scripting them.
 
