@@ -139,11 +139,16 @@ function makeRequest() {
       });
     })
     .catch(function(result) {
-      console.dir({
-        status: result.response.status,
-        statusText: result.response.statusText,
-        data: result.response.data
-      });
+      if (result.response) {
+        console.dir({
+          status: result.response.status,
+          statusText: result.response.statusText,
+          data: result.response.data
+        });
+      }
+      else {
+        console.log(result.message);
+      }
     });
 }
 
