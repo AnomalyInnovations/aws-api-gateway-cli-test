@@ -1,6 +1,6 @@
 {
   "name": "aws-api-gateway-cli-test",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A simple CLI to test API Gateway endpoints with IAM authorization.",
   "main": "index.js",
   "scripts": {
