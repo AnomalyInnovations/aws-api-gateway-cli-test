@@ -1,69 +1,80 @@
 #!/usr/bin/env node
 
-var AWS = require('aws-sdk');
-var AWSCognito = require('amazon-cognito-identity-js');
-var apigClientFactory = require('aws-api-gateway-client').default;
+var packageJson = require("./package.json");
 
-var argv = require('yargs')
-  .option('username', {
-    describe: 'Username of the user',
-    demandOption: true
-  })
-  .option('password', {
-    describe: 'Password of the user',
-    demandOption: true
-  })
-  .option('user-pool-id', {
-    describe: 'Cognito user pool id',
-    demandOption: true
-  })
-  .option('app-client-id', {
-    describe: 'Cognito user pool app client id',
-    demandOption: true
-  })
-  .option('cognito-region', {
-    describe: 'Cognito region',
-    default: 'us-east-1'
-  })
-  .option('identity-pool-id', {
-    describe: 'Cognito identity pool id',
-    demandOption: true
-  })
-  .option('invoke-url', {
-    describe: 'API Gateway URL',
-    demandOption: true
-  })
-  .option('api-gateway-region', {
-    describe: 'API Gateway region',
-    default: 'us-east-1'
-  })
-  .option('path-template', {
-    describe: 'API path template',
-    demandOption: true
-  })
-  .option('method', {
-    describe: 'API method',
-    default: 'GET'
-  })
-  .option('params', {
-    describe: 'API request params',
-    default: '{}'
-  })
-  .option('additional-params', {
-    describe: 'API request additional params',
-    default: '{}'
-  })
-  .option('body', {
-    describe: 'API request body',
-    default: '{}'
-  })
-  .argv;
+var AWS = require("aws-sdk");
+var AWSCognito = require("amazon-cognito-identity-js");
+var apigClientFactory = require("aws-api-gateway-client").default;
+var WindowMock = require("window-mock").default;
 
+global.window = { localStorage: new WindowMock().localStorage };
+global.navigator = function() {
+  return null;
+};
+
+var argv = require("yargs")
+  .option("username", {
+    describe: "Username of the user",
+    demandOption: true
+  })
+  .option("password", {
+    describe: "Password of the user",
+    demandOption: true
+  })
+  .option("user-pool-id", {
+    describe: "Cognito user pool id",
+    demandOption: true
+  })
+  .option("app-client-id", {
+    describe: "Cognito user pool app client id",
+    demandOption: true
+  })
+  .option("cognito-region", {
+    describe: "Cognito region",
+    default: "us-east-1"
+  })
+  .option("identity-pool-id", {
+    describe: "Cognito identity pool id",
+    demandOption: true
+  })
+  .option("invoke-url", {
+    describe: "API Gateway URL",
+    demandOption: true
+  })
+  .option("api-gateway-region", {
+    describe: "API Gateway region",
+    default: "us-east-1"
+  })
+  .option("path-template", {
+    describe: "API path template",
+    demandOption: true
+  })
+  .option("method", {
+    describe: "API method",
+    default: "GET"
+  })
+  .option("params", {
+    describe: "API request params",
+    default: "{}"
+  })
+  .option("additional-params", {
+    describe: "API request additional params",
+    default: "{}"
+  })
+  .option("body", {
+    describe: "API request body",
+    default: "{}"
+  })
+  .help("h")
+  .alias("h", "help")
+  .alias("v", "version")
+  .version(packageJson.version)
+  .wrap(null).argv;
 
 function authenticate(callback) {
   var poolData = {
-    UserPoolId : argv.userPoolId,
-    ClientId : argv.appClientId
+    UserPoolId: argv.userPoolId,
+    ClientId: argv.appClientId
   };
 
   AWS.config.update({ region: argv.cognitoRegion });
@@ -77,14 +88,16 @@ function authenticate(callback) {
     Username: argv.username,
     Password: argv.password
   };
-  var authenticationDetails = new AWSCognito.AuthenticationDetails(authenticationData);
+  var authenticationDetails = new AWSCognito.AuthenticationDetails(
+    authenticationData
+  );
 
   var cognitoUser = new AWSCognito.CognitoUser(userData);
 
-  console.log('Authenticating with User Pool');
+  console.log("Authenticating with User Pool");
 
   cognitoUser.authenticateUser(authenticationDetails, {
-    onSuccess: function (result) {
+    onSuccess: function(result) {
       callback(result.getIdToken().getJwtToken());
     },
     onFailure: function(err) {
@@ -94,11 +107,13 @@ function authenticate(callback) {
 }
 
 function getCredentials(userToken, callback) {
-  console.log('Getting temporary credentials');
+  console.log("Getting temporary credentials");
 
   var logins = {};
 
-  logins['cognito-idp.' + argv.cognitoRegion + '.amazonaws.com/' + argv.userPoolId] = userToken;
+  logins[
+    "cognito-idp." + argv.cognitoRegion + ".amazonaws.com/" + argv.userPoolId
+  ] = userToken;
 
   AWS.config.credentials = new AWS.CognitoIdentityCredentials({
     IdentityPoolId: argv.identityPoolId,
@@ -116,7 +131,7 @@ function getCredentials(userToken, callback) {
 }
 
 function makeRequest() {
-  console.log('Making API request');
+  console.log("Making API request");
 
   var apigClient = apigClientFactory.newClient({
     accessKey: AWS.config.credentials.accessKeyId,
@@ -130,7 +145,8 @@ function makeRequest() {
   var additionalParams = JSON.parse(argv.additionalParams);
   var body = JSON.parse(argv.body);
 
-  apigClient.invokeApi(params, argv.pathTemplate, argv.method, additionalParams, body)
+  apigClient
+    .invokeApi(params, argv.pathTemplate, argv.method, additionalParams, body)
     .then(function(result) {
       console.dir({
         status: result.status,
@@ -145,15 +161,12 @@ function makeRequest() {
           statusText: result.response.statusText,
           data: result.response.data
         });
-      }
-      else {
+      } else {
         console.log(result.message);
       }
     });
 }
 
-authenticate(
-  function(token) {
-    getCredentials(token, makeRequest);
-  }
-);
+authenticate(function(token) {
+  getCredentials(token, makeRequest);
+});
