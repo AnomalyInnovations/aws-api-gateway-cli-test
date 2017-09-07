@@ -102,6 +102,15 @@ function authenticate(callback) {
     },
     onFailure: function(err) {
       console.log(err.message ? err.message : err);
+    },
+    newPasswordRequired: function() {
+      console.log("Given user needs to set a new password");
+    },
+    mfaRequired: function() {
+      console.log("MFA is not currently supported");
+    },
+    customChallenge: function() {
+      console.log("Custom challenge is not currently supported");
     }
   });
 }
