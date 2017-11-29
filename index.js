@@ -45,6 +45,10 @@ var argv = require("yargs")
     describe: "API Gateway region",
     default: "us-east-1"
   })
+  .option("api-key",{
+    describe: "API Key",
+    default: undefined
+  })
   .option("path-template", {
     describe: "API path template",
     demandOption: true
@@ -143,6 +147,7 @@ function makeRequest() {
   console.log("Making API request");
 
   var apigClient = apigClientFactory.newClient({
+    apiKey: argv.apiKey,
     accessKey: AWS.config.credentials.accessKeyId,
     secretKey: AWS.config.credentials.secretAccessKey,
     sessionToken: AWS.config.credentials.sessionToken,
