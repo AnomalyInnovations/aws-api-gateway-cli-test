@@ -22,6 +22,7 @@ $ apig-test \
   --identity-pool-id='us-east-1:99xxyyx-9999-9999-xx0x-99xxxxxxxx' \
   --invoke-url='https://99xxxxxxx.execute-api.us-east-1.amazonaws.com' \
   --api-gateway-region='us-east-1' \
+  --api-key='x3xaacea33DCDA3aqafae28aCdaeEWXX1ada3acx' \
   --path-template='/users' \
   --method='GET' \
   --params='{}' \
@@ -54,6 +55,9 @@ This command takes the following options:
 
 - `api-gateway-region`
   The API Gateway region. Defaults to `us-east-1`.
+  
+- `api-key`
+  The API key if required by the method. Defaults to none.
 
 - `path-template`
   The path template of the API.
