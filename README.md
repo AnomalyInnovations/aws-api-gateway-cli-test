@@ -27,6 +27,7 @@ $ apig-test \
   --method='GET' \
   --params='{}' \
   --additional-params='{}' \
+  --access-token-header='cognito-access-token' \
   --body='{}'
 ```
 
@@ -70,6 +71,9 @@ This command takes the following options:
 
 - `additional-params`
   Any additional params (including the querystring) as a JSON string. Defaults to `'{}'`.
+
+- `access-token-header`
+  Header field on which to pass the access token.
 
 - `body`
   The request body as a JSON string. Defaults to `'{}'`.
