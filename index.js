@@ -69,6 +69,9 @@ var argv = require("yargs")
     describe: "API request body",
     default: "{}"
   })
+  .option("access-token-header", {
+    describe: "Header to use to pass access token with request"
+  })
   .help("h")
   .alias("h", "help")
   .alias("v", "version")
@@ -102,7 +105,10 @@ function authenticate(callback) {
 
   cognitoUser.authenticateUser(authenticationDetails, {
     onSuccess: function(result) {
-      callback(result.getIdToken().getJwtToken());
+      callback({
+        idToken: result.getIdToken().getJwtToken(),
+        accessToken: result.getAccessToken().getJwtToken()
+      });
     },
     onFailure: function(err) {
       console.log(err.message ? err.message : err);
@@ -119,14 +125,15 @@ function authenticate(callback) {
   });
 }
 
-function getCredentials(userToken, callback) {
+function getCredentials(userTokens, callback) {
   console.log("Getting temporary credentials");
 
   var logins = {};
+  const { idToken, accessToken } = userTokens;
 
   logins[
     "cognito-idp." + argv.cognitoRegion + ".amazonaws.com/" + argv.userPoolId
-  ] = userToken;
+  ] = idToken;
 
   AWS.config.credentials = new AWS.CognitoIdentityCredentials({
     IdentityPoolId: argv.identityPoolId,
@@ -139,11 +146,11 @@ function getCredentials(userToken, callback) {
       return;
     }
 
-    callback();
+    callback(userTokens);
   });
 }
 
-function makeRequest() {
+function makeRequest(userTokens) {
   console.log("Making API request");
 
   var apigClient = apigClientFactory.newClient({
@@ -159,13 +166,19 @@ function makeRequest() {
   var additionalParams = JSON.parse(argv.additionalParams);
   var body = JSON.parse(argv.body);
 
+  if (argv.accessTokenHeader) {
+    const tokenHeader = {};
+    tokenHeader[argv.accessTokenHeader] = userTokens.accessToken;
+    additionalParams.headers = Object.assign({}, additionalParams.headers, tokenHeader);
+  }
+
   apigClient
     .invokeApi(params, argv.pathTemplate, argv.method, additionalParams, body)
     .then(function(result) {
       console.dir({
         status: result.status,
         statusText: result.statusText,
-        data: result.data
+        data: JSON.stringify(result.data)
       });
     })
     .catch(function(result) {
@@ -173,7 +186,7 @@ function makeRequest() {
         console.dir({
           status: result.response.status,
           statusText: result.response.statusText,
-          data: result.response.data
+          data: JSON.stringify(result.response.data)
         });
       } else {
         console.log(result.message);
@@ -181,6 +194,6 @@ function makeRequest() {
     });
 }
 
-authenticate(function(token) {
-  getCredentials(token, makeRequest);
+authenticate(function(tokens) {
+  getCredentials(tokens, makeRequest);
 });
