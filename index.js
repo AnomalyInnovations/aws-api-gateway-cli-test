@@ -129,7 +129,8 @@ function getCredentials(userTokens, callback) {
   console.log("Getting temporary credentials");
 
   var logins = {};
-  const { idToken, accessToken } = userTokens;
+  const idToken = userTokens.idToken;
+  const accessToken = userTokens.accessToken;
 
   logins[
     "cognito-idp." + argv.cognitoRegion + ".amazonaws.com/" + argv.userPoolId
@@ -178,7 +179,7 @@ function makeRequest(userTokens) {
       console.dir({
         status: result.status,
         statusText: result.statusText,
-        data: JSON.stringify(result.data)
+        data: result.data
       });
     })
     .catch(function(result) {
@@ -186,7 +187,7 @@ function makeRequest(userTokens) {
         console.dir({
           status: result.response.status,
           statusText: result.response.statusText,
-          data: JSON.stringify(result.response.data)
+          data: result.response.data
         });
       } else {
         console.log(result.message);
