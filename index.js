@@ -69,6 +69,9 @@ var argv = require("yargs")
     describe: "API request body",
     default: "{}"
   })
+  .option("access-token-header", {
+    describe: "Header to use to pass access token with request"
+  })
   .help("h")
   .alias("h", "help")
   .alias("v", "version")
@@ -102,7 +105,10 @@ function authenticate(callback) {
 
   cognitoUser.authenticateUser(authenticationDetails, {
     onSuccess: function(result) {
-      callback(result.getIdToken().getJwtToken());
+      callback({
+        idToken: result.getIdToken().getJwtToken(),
+        accessToken: result.getAccessToken().getJwtToken()
+      });
     },
     onFailure: function(err) {
       console.log(err.message ? err.message : err);
@@ -119,14 +125,16 @@ function authenticate(callback) {
   });
 }
 
-function getCredentials(userToken, callback) {
+function getCredentials(userTokens, callback) {
   console.log("Getting temporary credentials");
 
   var logins = {};
+  const idToken = userTokens.idToken;
+  const accessToken = userTokens.accessToken;
 
   logins[
     "cognito-idp." + argv.cognitoRegion + ".amazonaws.com/" + argv.userPoolId
-  ] = userToken;
+  ] = idToken;
 
   AWS.config.credentials = new AWS.CognitoIdentityCredentials({
     IdentityPoolId: argv.identityPoolId,
@@ -139,11 +147,11 @@ function getCredentials(userToken, callback) {
       return;
     }
 
-    callback();
+    callback(userTokens);
   });
 }
 
-function makeRequest() {
+function makeRequest(userTokens) {
   console.log("Making API request");
 
   var apigClient = apigClientFactory.newClient({
@@ -158,6 +166,12 @@ function makeRequest() {
   var params = JSON.parse(argv.params);
   var additionalParams = JSON.parse(argv.additionalParams);
   var body = JSON.parse(argv.body);
+
+  if (argv.accessTokenHeader) {
+    const tokenHeader = {};
+    tokenHeader[argv.accessTokenHeader] = userTokens.accessToken;
+    additionalParams.headers = Object.assign({}, additionalParams.headers, tokenHeader);
+  }
 
   apigClient
     .invokeApi(params, argv.pathTemplate, argv.method, additionalParams, body)
@@ -181,6 +195,6 @@ function makeRequest() {
     });
 }
 
-authenticate(function(token) {
-  getCredentials(token, makeRequest);
+authenticate(function(tokens) {
+  getCredentials(tokens, makeRequest);
 });
