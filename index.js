@@ -129,8 +129,8 @@ function getCredentials(userTokens, callback) {
   console.log("Getting temporary credentials");
 
   var logins = {};
-  const idToken = userTokens.idToken;
-  const accessToken = userTokens.accessToken;
+  var idToken = userTokens.idToken;
+  var accessToken = userTokens.accessToken;
 
   logins[
     "cognito-idp." + argv.cognitoRegion + ".amazonaws.com/" + argv.userPoolId
