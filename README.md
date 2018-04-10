@@ -10,10 +10,39 @@ To install globally run the following:
 $ npm install -g aws-api-gateway-cli-test
 ```
 
+You can also use it locally using:
+
+```
+$ npx aws-api-gateway-cli-test
+```
+
 ### Usage
+
+If you have it globally installed:
 
 ```
 $ apig-test \
+  --username='johndoe' \
+  --password='password' \
+  --user-pool-id='us-east-1_Xxxxxxxx' \
+  --app-client-id='29xxyyxxyxxxyyxxxyy' \
+  --cognito-region='us-east-1' \
+  --identity-pool-id='us-east-1:99xxyyx-9999-9999-xx0x-99xxxxxxxx' \
+  --invoke-url='https://99xxxxxxx.execute-api.us-east-1.amazonaws.com' \
+  --api-gateway-region='us-east-1' \
+  --api-key='x3xaacea33DCDA3aqafae28aCdaeEWXX1ada3acx' \
+  --path-template='/users' \
+  --method='GET' \
+  --params='{}' \
+  --additional-params='{}' \
+  --access-token-header='cognito-access-token' \
+  --body='{}'
+```
+
+If you have it locally installed:
+
+```
+$ npx aws-api-gateway-cli-test \
   --username='johndoe' \
   --password='password' \
   --user-pool-id='us-east-1_Xxxxxxxx' \
