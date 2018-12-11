@@ -37,6 +37,7 @@ $ apig-test \
   --additional-params='{}' \
   --access-token-header='cognito-access-token' \
   --body='{}'
+  --debug
 ```
 
 If you have it locally installed:
@@ -70,7 +71,7 @@ This command takes the following options:
 
 - `api-gateway-region`
   The API Gateway region. Defaults to `us-east-1`.
-  
+
 - `api-key`
   The API key if required by the method. Defaults to none.
 
@@ -91,6 +92,9 @@ This command takes the following options:
 
 - `body`
   The request body as a JSON string. Defaults to `'{}'`.
+
+- `debug`
+    Additional debug output for response payload and errors.
 
 For additional documentation on the format for `params` and `additional-params`; refer to the generic [API Gateway Client][apiGClient] docs.
 
