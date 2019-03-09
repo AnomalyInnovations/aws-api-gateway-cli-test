@@ -70,7 +70,7 @@ This command takes the following options:
 
 - `api-gateway-region`
   The API Gateway region. Defaults to `us-east-1`.
-  
+
 - `api-key`
   The API key if required by the method. Defaults to none.
 
@@ -91,6 +91,9 @@ This command takes the following options:
 
 - `body`
   The request body as a JSON string. Defaults to `'{}'`.
+
+- `anonymous`
+  Perform action anonymously, without IAM credentials.
 
 For additional documentation on the format for `params` and `additional-params`; refer to the generic [API Gateway Client][apiGClient] docs.
 

@@ -65,6 +65,10 @@ var argv = require("yargs")
     describe: "API request additional params",
     default: "{}"
   })
+  .option("anonymous", {
+    describe: "Perform action without IAM credentials",
+    demandOption: false
+  })
   .option("body", {
     describe: "API request body",
     default: "{}"
@@ -195,6 +199,10 @@ function makeRequest(userTokens) {
     });
 }
 
-authenticate(function(tokens) {
-  getCredentials(tokens, makeRequest);
-});
+if (argv.anonymous) {
+  makeRequest(null)
+} else {
+  authenticate(function(tokens) {
+    getCredentials(tokens, makeRequest);
+  });
+}
