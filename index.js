@@ -110,14 +110,16 @@ function authenticate(callback) {
         accessToken: result.getAccessToken().getJwtToken()
       });
     },
-    onFailure: function(err) {
+    onFailure: function(err) {``
       console.log(err.message ? err.message : err);
     },
     newPasswordRequired: function() {
       console.log("Given user needs to set a new password");
     },
-    mfaRequired: function() {
-      console.log("MFA is not currently supported");
+    mfaRequired: function(authenticationDetails) {
+      promptConfirmationCode(function(confirmationCode, authenticator){
+        cognitoUser.sendMFACode(confirmationCode, authenticator);
+      }, this);
     },
     customChallenge: function() {
       console.log("Custom challenge is not currently supported");
@@ -193,6 +195,21 @@ function makeRequest(userTokens) {
         console.log(result.message);
       }
     });
+}
+
+function promptConfirmationCode(callback, authenticator){
+  var readline = require('readline');
+
+  var rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  rl.question('Confirmation code (see SMS text message):', function(answer){
+    rl.close();
+    callback(answer, authenticator);
+  });
+
 }
 
 authenticate(function(tokens) {
