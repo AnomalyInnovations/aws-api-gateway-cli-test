@@ -18,7 +18,7 @@
   "dependencies": {
     "amazon-cognito-identity-js": "^1.19.0",
     "aws-api-gateway-client": "^0.2.7",
-    "aws-sdk": "^2.80.0",
+    "aws-sdk": "^2.421.0",
     "window-mock": "0.0.13",
     "yargs": "^8.0.2"
   }
