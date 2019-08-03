@@ -15,7 +15,8 @@ global.navigator = function() {
 var argv = require("yargs")
   .option("username", {
     describe: "Username of the user",
-    demandOption: true
+    demandOption: true,
+    string: true
   })
   .option("password", {
     describe: "Password of the user",
