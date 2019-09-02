@@ -81,10 +81,10 @@ This command takes the following options:
   The API method. Defaults to `GET`.
 
 - `params`
-  The API params (path, header, querystring, etc) as a JSON string. Defaults to `'{}'`.
+  The API path params as a JSON string. Defaults to `'{}'`.
 
 - `additional-params`
-  Any additional params (including the querystring) as a JSON string. Defaults to `'{}'`.
+  Any additional params (including the headers and querystring) as a JSON string. Defaults to `'{}'`.
 
 - `access-token-header`
   Header field on which to pass the access token.
@@ -93,6 +93,43 @@ This command takes the following options:
   The request body as a JSON string. Defaults to `'{}'`.
 
 For additional documentation on the format for `params` and `additional-params`; refer to the generic [API Gateway Client][apiGClient] docs.
+
+### Examples
+
+To pass in path parameters with your request.
+
+``` bash
+$ npx aws-api-gateway-cli-test \
+--username='email@example.com' \
+--password='password' \
+--user-pool-id='abc' \
+--app-client-id='def' \
+--cognito-region='us-east-1' \
+--identity-pool-id='ghi' \
+--invoke-url='https://123.execute-api.us-east-1.amazonaws.com/prod' \
+--api-gateway-region='us-east-1' \
+--path-template='/notes/{id}' \
+--params='{"id":"456"}' \
+--method='GET'
+```
+
+To pass in query parameters and headers with your request.
+
+``` bash
+$ npx aws-api-gateway-cli-test \
+--username='email@example.com' \
+--password='password' \
+--user-pool-id='abc' \
+--app-client-id='def' \
+--cognito-region='us-east-1' \
+--identity-pool-id='ghi' \
+--invoke-url='https://123.execute-api.us-east-1.amazonaws.com/prod' \
+--api-gateway-region='us-east-1' \
+--path-template='/notes' \
+--additional-params='{"queryParams":{"param0":"abc"},"headers":{"param1":"123"}}' \
+--method='GET'
+```
+
 
 ### Local Development
 
