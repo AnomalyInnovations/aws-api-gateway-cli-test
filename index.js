@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var packageJson = require("./package.json");
-var fs = require('fs');
+var fs = require("fs");
 
 var AWS = require("aws-sdk");
 var AWSCognito = require("amazon-cognito-identity-js");
@@ -47,7 +47,7 @@ var argv = require("yargs")
     describe: "API Gateway region",
     default: "us-east-1"
   })
-  .option("api-key",{
+  .option("api-key", {
     describe: "API Key",
     default: undefined
   })
@@ -168,20 +168,25 @@ function makeRequest(userTokens) {
   var params = JSON.parse(argv.params);
   var additionalParams = JSON.parse(argv.additionalParams);
 
-  var body = '';
+  var body = "";
   if (argv.body.startsWith("@")) {
-     // body from file
-     const bodyFromFile = argv.body.replace(/^@/, "");
-     const contentFromFile = fs.readFileSync(bodyFromFile);
-     body = JSON.parse(contentFromFile);
-  } else {
-     body = JSON.parse(argv.body);
-  };
+    // Body from file
+    const bodyFromFile = argv.body.replace(/^@/, "");
+    const contentFromFile = fs.readFileSync(bodyFromFile);
+    body = JSON.parse(contentFromFile);
+  }
+  else {
+    body = JSON.parse(argv.body);
+  }
 
   if (argv.accessTokenHeader) {
     const tokenHeader = {};
     tokenHeader[argv.accessTokenHeader] = userTokens.accessToken;
-    additionalParams.headers = Object.assign({}, additionalParams.headers, tokenHeader);
+    additionalParams.headers = Object.assign(
+      {},
+      additionalParams.headers,
+      tokenHeader
+    );
   }
 
   apigClient
