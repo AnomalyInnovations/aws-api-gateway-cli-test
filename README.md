@@ -90,7 +90,7 @@ This command takes the following options:
   Header field on which to pass the access token.
 
 - `body`
-  The request body as a JSON string. Defaults to `'{}'`.
+  The request body as a JSON string. Defaults to `'{}'`. Alternatively, reference a file with a JSON string using `--body='@mocks/create.json'` where `mocks/create.json` is the file with the request body.
 
 For additional documentation on the format for `params` and `additional-params`; refer to the generic [API Gateway Client][apiGClient] docs.
 
