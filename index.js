@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var packageJson = require("./package.json");
+var fs = require('fs');
 
 var AWS = require("aws-sdk");
 var AWSCognito = require("amazon-cognito-identity-js");
@@ -166,7 +167,16 @@ function makeRequest(userTokens) {
 
   var params = JSON.parse(argv.params);
   var additionalParams = JSON.parse(argv.additionalParams);
-  var body = JSON.parse(argv.body);
+
+  var body = '';
+  if (argv.body.startsWith("@")) {
+     // body from file
+     const bodyFromFile = argv.body.replace(/^@/, "");
+     const contentFromFile = fs.readFileSync(bodyFromFile);
+     body = JSON.parse(contentFromFile);
+  } else {
+     body = JSON.parse(argv.body);
+  };
 
   if (argv.accessTokenHeader) {
     const tokenHeader = {};
