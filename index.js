@@ -74,7 +74,12 @@ var argv = require("yargs")
   .option("access-token-header", {
     describe: "Header to use to pass access token with request"
   })
+	.option("debug",{
+    describe: "Additional debug output for response and errors",
+    default: false
+  })
   .help("h")
+	.alias("d", "debug")
   .alias("h", "help")
   .alias("v", "version")
   .version(packageJson.version)
@@ -195,7 +200,9 @@ function makeRequest(userTokens) {
       console.dir({
         status: result.status,
         statusText: result.statusText,
-        data: result.data
+				showHidden:argv.debug,
+				depth:argv.debug ? null : 2,
+				colors:argv.debug
       });
     })
     .catch(function(result) {
@@ -203,8 +210,10 @@ function makeRequest(userTokens) {
         console.dir({
           status: result.response.status,
           statusText: result.response.statusText,
-          data: result.response.data
-        });
+          showHidden:argv.debug,
+          depth:argv.debug ? null : 2,
+          colors:argv.debug
+      });
       } else {
         console.log(result.message);
       }
