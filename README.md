@@ -149,12 +149,8 @@ To install the `apig-test` command, run the following:
 $ npm link
 ```
 
-### Feedback
-
-Send us your feedback via Twitter to Frank Wang ([@fanjiewang][fTwitter]) or Jay V ([@jayair][jTwitter]). Or send us an [email][email].
-
 
 [apiGClient]: https://github.com/kndt84/aws-api-gateway-client
 [fTwitter]: https://twitter.com/fanjiewang
 [jTwitter]: https://twitter.com/jayair
-[email]: mailto:contact@anoma.ly
+[email]: mailto:hello@serverless-stack.com
