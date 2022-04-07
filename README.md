@@ -47,6 +47,9 @@ $ npx aws-api-gateway-cli-test --options
 
 This command takes the following options:
 
+- `config`
+  Read parameters from a file.  File must be valid JSON and end in a .json extension.  Command line parameters will override the same config file parameter.
+
 - `username`
   The username of the Cognito User Pool user.
 

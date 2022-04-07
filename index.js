@@ -14,6 +14,7 @@ global.navigator = function() {
 };
 
 var argv = require("yargs")
+  .config()
   .option("username", {
     describe: "Username of the user",
     demandOption: true,
