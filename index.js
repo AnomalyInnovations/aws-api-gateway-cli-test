@@ -37,7 +37,7 @@ var argv = require("yargs")
   })
   .option("identity-pool-id", {
     describe: "Cognito identity pool id",
-    demandOption: true
+    demandOption: false
   })
   .option("invoke-url", {
     describe: "API Gateway URL",
@@ -128,42 +128,60 @@ function authenticate(callback) {
 }
 
 function getCredentials(userTokens, callback) {
-  console.log("Getting temporary credentials");
 
-  var logins = {};
-  var idToken = userTokens.idToken;
-  var accessToken = userTokens.accessToken;
+  if (!argv.identityPoolId) {
 
-  logins[
-    "cognito-idp." + argv.cognitoRegion + ".amazonaws.com/" + argv.userPoolId
-  ] = idToken;
-
-  AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-    IdentityPoolId: argv.identityPoolId,
-    Logins: logins
-  });
-
-  AWS.config.credentials.get(function(err) {
-    if (err) {
-      console.log(err.message ? err.message : err);
-      return;
-    }
-
+    console.log("No Identity Pool provided, using JWT Authorization");
     callback(userTokens);
-  });
+
+  } else {
+
+    console.log("Getting temporary IAM credentials");
+
+    var logins = {};
+    var idToken = userTokens.idToken;
+    var accessToken = userTokens.accessToken;
+  
+    logins[
+      "cognito-idp." + argv.cognitoRegion + ".amazonaws.com/" + argv.userPoolId
+    ] = idToken;
+  
+    AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+      IdentityPoolId: argv.identityPoolId,
+      Logins: logins
+    });
+  
+    AWS.config.credentials.get(function(err) {
+      if (err) {
+        console.log(err.message ? err.message : err);
+        return;
+      }
+  
+      callback(userTokens);
+    });
+
+  }
+
 }
 
 function makeRequest(userTokens) {
   console.log("Making API request");
 
-  var apigClient = apigClientFactory.newClient({
+  // Base params
+  let apigClientParams = {
     apiKey: argv.apiKey,
-    accessKey: AWS.config.credentials.accessKeyId,
-    secretKey: AWS.config.credentials.secretAccessKey,
-    sessionToken: AWS.config.credentials.sessionToken,
     region: argv.apiGatewayRegion,
     invokeUrl: argv.invokeUrl
-  });
+  }
+
+  // Optional IAM params
+  if (argv.identityPoolId) {
+    apigClientParams.accessKey = AWS.config.credentials.accessKeyId;
+    apigClientParams.secretKey = AWS.config.credentials.secretAccessKey;
+    apigClientParams.sessionToken = AWS.config.credentials.sessionToken;
+  }
+
+  var apigClient = apigClientFactory.newClient(apigClientParams);
 
   var params = JSON.parse(argv.params);
   var additionalParams = JSON.parse(argv.additionalParams);
@@ -186,6 +204,15 @@ function makeRequest(userTokens) {
       {},
       additionalParams.headers,
       tokenHeader
+    );
+  }
+
+  // Add authorization header if no Identity Pool Provided
+  if (!argv.identityPoolId) {
+    additionalParams.headers = Object.assign(
+      {},
+      additionalParams.headers,
+      {"Authorization": `Bearer ${userTokens.idToken}`},
     );
   }
 

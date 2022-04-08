@@ -63,7 +63,7 @@ This command takes the following options:
   The Cognito User Pool region. Defaults to `us-east-1`.
 
 - `identity-pool-id`
-  The Cognito Identity Pool Id.
+  Optional Cognito Identity Pool Id.  If provided, attempt to use IAM authorisation, else fall back to JWT authorisation.
 
 - `invoke-url`
   The API Gateway root endpoint.
